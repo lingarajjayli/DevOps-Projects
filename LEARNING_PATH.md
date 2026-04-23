@@ -20,6 +20,15 @@
 **Prerequisites:** None
 **Duration:** 1-2 hours
 
+**Files:**
+- Fun with Linux/001-Linux-Fundamentals.md
+- Fun with Linux/002-User-Management.md
+- Fun with Linux/003-File-Permissions.md
+- Fun with Linux/004-Process-Management.md
+- Fun with Linux/005-Package-Management.md
+- Fun with Linux/006-Networking-Basics.md
+- Fun with Linux/007-Practical-Exercises.md
+
 ---
 
 ### **Module 2: Docker Containerization** 🐳 Beginner-Intermediate
@@ -33,6 +42,15 @@
 
 **Prerequisites:** Linux basics (Module 1)
 **Duration:** 2-3 hours
+
+**Files:**
+- DevOps-Project-01/Docker-101.md
+- DevOps-Project-01/Docker-102-Images.md
+- DevOps-Project-01/Docker-103-Container-Lifecycle.md
+- DevOps-Project-01/Docker-104-Dockerfile-Best-Practices.md
+- DevOps-Project-01/Docker-105-AWS-ECR.md
+- DevOps-Project-01/Docker-106-EC2-ECS.md
+- DevOps-Project-01/Docker-107-Compose-Practice.md
 
 ---
 
@@ -66,97 +84,6 @@
 - IAM roles and policies
 
 **Prerequisites:** Basic AWS knowledge
-**Duration:** 3-4 hours
-
----
-
-### **Module 5: Azure DevOps** ☁️ Intermediate
-**Project:** DevOps Project-04 - DevOps Journey on Azure
-
-**Topics Covered:**
-- Azure DevOps pipelines
-- YAML pipeline syntax
-- Terraform on Azure
-- AKS (Azure Kubernetes Service)
-- Application Insights monitoring
-
-**Prerequisites:** Docker + CI/CD knowledge
-**Duration:** 3-4 hours
-
----
-
-### **Module 6: Kubernetes Deep Dive** 🚀 Intermediate-Advanced
-**Project:** DevOps Project-05 - EKS End-to-End
-
-**Topics Covered:**
-- Kubernetes architecture
-- EKS cluster setup
-- Pod, Deployment, Service manifests
-- Helm charts
-- Ingress configuration
-- 2048 game deployment
-
-**Prerequisites:** Docker + AWS knowledge
-**Duration:** 4-5 hours
-
----
-
-### **Module 7: DevSecOps** 🔒 Advanced
-**Project:** DevOps Project-06 - Netflix Clone with Security
-
-**Topics Covered:**
-- SonarQube static analysis
-- Trivy vulnerability scanning
-- OWASP Dependency-Check
-- Grafana monitoring dashboards
-- Prometheus metrics
-- Email notifications
-- Pipeline security best practices
-
-**Prerequisites:** CI/CD + Docker knowledge
-**Duration:** 4-5 hours
-
----
-
-### **Module 8: Advanced Multi-Tool CI/CD** 🛠️ Advanced
-**Project:** DevOps Project-03 - Advanced CI/CD Toolkit
-
-**Topics Covered:**
-- Multi-tool integration
-- Terraform + Jenkins + Ansible
-- SonarQube + JFrog
-- Docker + EKS + Prometheus + Grafana
-- Enterprise-grade pipelines
-
-**Prerequisites:** All previous modules
-**Duration:** 5-6 hours
-
----
-
-### **Module 9: .NET DevOps** 💙 Intermediate
-**Project:** DevOps Project-07 - .NET CI/CD
-
-**Topics Covered:**
-- .NET application building
-- Azure DevOps for .NET
-- NuGet package management
-- Azure deployment
-
-**Prerequisites:** Module 4 (Azure DevOps)
-**Duration:** 2-3 hours
-
----
-
-### **Module 10: Mobile CI/CD** 📱 Beginner-Intermediate
-**Project:** DevOps Project-14 - Android CI/CD
-
-**Topics Covered:**
-- Android build setup
-- GitHub Actions for Android
-- APK/AAB generation
-- App Store deployment
-
-**Prerequisites:** Basic GitHub Actions knowledge
 **Duration:** 3-4 hours
 
 ---
@@ -195,27 +122,24 @@
 
 ## 📝 Progress Tracking
 
-Use this section to track your progress:
-
-| Module | Project | Status | Date Completed | Notes |
-|--------|---------|--------|-----------------|-------|
-| 1 | Fun with Linux | ⬜ Not Started | | |
-| 2 | DevOps-Project-01 | ⬜ Not Started | | |
-| 3 | DevOps Project-02 | ⬜ Not Started | | |
-| 4 | DevOps Project-11 | ⬜ Not Started | | |
-| 5 | DevOps Project-04 | ⬜ Not Started | | |
-| 6 | DevOps Project-05 | ⬜ Not Started | | |
-| 7 | DevOps Project-06 | ⬜ Not Started | | |
-| 8 | DevOps Project-03 | ⬜ Not Started | | |
-| 9 | DevOps Project-07 | ⬜ Not Started | | |
-| 10 | DevOps Project-14 | ⬜ Not Started | | |
+| Module | Project | Status | Date Completed |
+|--------|---------|-------|----------------|
+| 1 | Fun with Linux | ✅ Completed | 2026-04-23 |
+| 2 | DevOps-Project-01 | ⬜ Not Started | |
+| 3 | DevOps Project-02 | ⬜ Not Started | |
+| 4 | DevOps Project-11 | ⬜ Not Started | |
+| 5 | DevOps Project-04 | ⬜ Not Started | |
+| 6 | DevOps Project-05 | ⬜ Not Started | |
+| 7 | DevOps Project-06 | ⬜ Not Started | |
+| 8 | DevOps Project-03 | ⬜ Not Started | |
+| 9 | DevOps Project-07 | ⬜ Not Started | |
+| 10 | DevOps Project-14 | ⬜ Not Started | |
 
 ---
 
 ## 🎯 Learning Outcomes
 
 By completing this learning path, you will:
-
 ✅ Master Linux administration for DevOps  
 ✅ Understand containerization and orchestration  
 ✅ Build robust CI/CD pipelines  
@@ -224,22 +148,22 @@ By completing this learning path, you will:
 ✅ Implement Kubernetes clusters  
 ✅ Apply DevSecOps best practices  
 ✅ Monitor applications with Prometheus/Grafana  
-✅ Work with multiple cloud providers  
 
 ---
 
 ## 📚 Resources
 
 - **Official Docs:** https://github.com/DevCloudNinjas
-- **Blog Posts:** Links in individual project READMEs
-- **Community:** Ask questions and share progress
+- **Docker Docs:** https://docs.docker.com/
+- **AWS Docs:** https://docs.aws.amazon.com/
+- **Azure Docs:** https://docs.microsoft.com/azure/
 
 ---
 
 ## 🚀 Ready to Start?
 
-**First Step:** Choose your learning path (A, B, C, or D) and mark Module 1 as "In Progress"
+**First Step:** Choose your learning path (A, B, C, or D) and proceed with Module 2: Docker Containerization
 
 ---
 
-*Last Updated: $(date +%Y-%m-%d)*
+*Last Updated: 2026-04-23*

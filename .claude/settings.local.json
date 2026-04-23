@@ -24,7 +24,11 @@
       "PowerShell(Rename-Item *)",
       "Bash(git commit -m 'Add S3 static website hosting project *)",
       "Bash(git commit -m 'Add 15 DevOps agents for infrastructure management *)",
-      "Bash(/D/DevOps-Projects/setup-auto-pusher.sh)"
+      "Bash(/D/DevOps-Projects/setup-auto-pusher.sh)",
+      "Bash(git commit -m 'Add Module 2: Docker Containerization *)",
+      "Bash(git commit -m 'Add Docker module files *)",
+      "Bash(*)",
+      "Bash(git commit -m 'Complete Module 2: Docker Containerization *)"
     ]
   },
   "prefersReducedMotion": true
