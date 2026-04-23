@@ -28,7 +28,8 @@
       "Bash(git commit -m 'Add Module 2: Docker Containerization *)",
       "Bash(git commit -m 'Add Docker module files *)",
       "Bash(*)",
-      "Bash(git commit -m 'Complete Module 2: Docker Containerization *)"
+      "Bash(git commit -m 'Complete Module 2: Docker Containerization *)",
+      "Bash(git *)"
     ]
   },
   "prefersReducedMotion": true
