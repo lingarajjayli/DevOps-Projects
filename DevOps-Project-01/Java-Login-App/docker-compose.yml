@@ -1,0 +1,83 @@
+# =====================================================
+# Docker Compose File - Java Login Application
+# =====================================================
+# This file defines the application stack for:
+#   - Spring Boot Login App (Java)
+#   - MySQL Database (AWS RDS or local)
+# =====================================================
+# =====================================================================
+
+version: '3.8'
+
+services:
+  # =====================================================
+  # App Service - Spring Boot Login Application
+  # =====================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      # For local development with MySQL container
+      - SPRING_DATASOURCE_URL=${DB_URL:-jdbc:mysql://mysql:3306/UserDB}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME:-root}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-password}
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-network
+    # Health check for the application
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    # Restart policy for production
+    restart: unless-stopped
+
+  # =====================================================
+  # MySQL Database Service
+  # =====================================================
+  mysql:
+    image: mysql:8.0
+    environment:
+      # For local development - use this for local MySQL testing
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-UserDB}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+    ports:
+      # Only expose for local development
+      - "${EXPOSE_MYSQL:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+    # Database health check
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-password}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# =====================================================
+# Kubernetes Environment Variables File
+# =====================================================
+# To use with AWS RDS, set these environment variables:
+#   DB_URL=jdbc:mysql://<your-rds-endpoint>:3306/UserDB
+#   DB_USERNAME=admin
+#   DB_PASSWORD=<your-rds-password>
+# =====================================================
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:

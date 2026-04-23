@@ -1,0 +1,84 @@
+# =====================================================
+# Kubernetes Deployment for AWS RDS Database
+# =====================================================
+# This deployment uses AWS RDS MySQL as the database
+# =====================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dptweb
+  labels:
+    app: dptweb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dptweb
+  template:
+    metadata:
+      labels:
+        app: dptweb
+    spec:
+      containers:
+        - name: app
+          image: your-registry.com/dptweb:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://ed-web-db.cdgiiabcm6en.us-east-1.rds.amazonaws.com:3306/UserDB"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "admin"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: "com.mysql.cj.jdbc.Driver"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+---
+# AWS Secret for Database Credentials
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+data:
+  password: <base64-encoded-password>  # Use: echo -n 'Admin123' | base64
+
+---
+# Service for the application
+apiVersion: v1
+kind: Service
+metadata:
+  name: dptweb-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30080
+      name: http
+  selector:
+    app: dptweb

@@ -1,407 +1,121 @@
-# Project-01: Java Login Application
+# Deploy Java Application on AWS 3-Tier Architecture
 
-![Project Banner](https://imgur.com/qimdPIU.png)
+![AWS](https://imgur.com/b9iHwVc.png)
 
+### TABLE OF CONTENTS
+1. [Goal](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Project-01.md#goal)
+2. [Pre-Requisites](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Project-01.md#pre-requisites)
+3. [Pre-Deployment](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Project-01.md#pre-deployment)
+4. [VPC Deployment](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Project-01.md#vpc-deployment)
+5. [Maven (Build)](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Project-01.md#maven-build)
+6. [3-Tier Architecture](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Project-01.md#3-tier-architecture)
+7. [Application Deployment](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Project-01.md#application-deployment)
+8. [Post-Deployment](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Project-01.md#post-deployment)
+9. [Validation](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Project-01.md#validation)
 ---
 
-## 📦 Project Overview
-
-A **Spring Boot** login and registration web application that demonstrates DevOps practices including CI/CD, containerization, and deployment.
-
-![Version Badge](https://img.shields.io/badge/Java-8-green.svg) ![Maven](https://img.shields.io/badge/Maven-3.6-green.svg) ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.2.4-orange.svg)
-
+![3-tier application](https://imgur.com/3XF0tlJ.png)
 ---
+## Goal
+Goal of this project is to deploy scalable, highly available and secured Java application on 3-tier architecture and provide application access to the end users from public internet.
+
+## Pre-Requisites
+
+1. Create AWS Free Tier account
+2. Create GitHub account and create repository to keep this Java [Source Code](https://github.com/DevCloudNinjas/DevOps-Projects/blob/master/DevOps%20Project-01/Java-Login-App)
+3. Migrate Java Source Code to your own GitHub repository
+4. Create account in Sonarcloud.
+5. Create account in Jfrog cloud.
+
+## Pre-Deployment
+
+1. Create Global AMI
+    1. AWS CLI
+    2. Cloudwatch agent
+    3. Install AWS SSM agent
+2. Create Golden AMI using Global AMI for Nginx application
+    1. Install Nginx
+    2. Push custom memory metrics to Cloudwatch.
+3. Create Golden AMI using Global AMI for Apache Tomcat application
+    1. Install Apache Tomcat
+    2. Configure Tomcat as Systemd service
+    3. Install JDK 11
+    4. Push custom memory metrics to Cloudwatch.
+4. Create Golden AMI using Global AMI for Apache Maven Build Tool
+    1. Install Apache Maven
+    2. Install Git
+    3. Install JDK 11
+    4. Update Maven Home to the system PATH environment variable
+
+## VPC Deployment   
+Deploy AWS Infrastructure resources as shown in the above architecture.
+
+#### VPC (Network Setup)
+
+1. Build VPC network ( 192.168.0.0/16 ) for Bastion Host deployment as per the architecture shown above.
+2. Build VPC network ( 172.32.0.0/16 ) for deploying Highly Available and Auto Scalable application servers as per the architecture shown above.
+3. Create NAT Gateway in Public Subnet and update Private Subnet associated Route Table accordingly to route the default traffic to NAT for outbound internet connection.
+4. Create Transit Gateway and associate both VPCs to the Transit Gateway  for private communication.
+5. Create Internet Gateway for each VPC and update Public Subnet associated Route Table accordingly to route the default traffic to IGW for inbound/outbound internet connection.
+
+#### Bastion
+
+1. Deploy Bastion Host in the Public Subnet with EIP associated.
+2. Create Security Group allowing port 22 from public internet
+
+## Maven (Build)
+
+1. Create EC2 instance using Maven Golden AMI
+2. Clone GitHub repository to VSCode and update the pom.xml with Sonar and JFROG deployment details.
+3. Add settings.xml file to the root folder of the repository with the JFROG credentials and JFROG repo to resolve the dependencies.
+4. Update application.properties file with JDBC connection string to authenticate with MySQL.
+5. Push the code changes to feature branch of GitHub repository
+6. Raise Pull Request to approve the PR and Merge the changes to Master branch.
+7. Login to EC2 instance and clone the GitHub repository
+8. Build the source code using  maven arguments “-s settings.xml”
+9. Integrate Maven build with Sonar Cloud and generate analysis dashboard with default Quality Gate profile.
+
+## 3-Tier Architecture
+
+#### Database (RDS)
+1. Deploy Multi-AZ MySQL RDS instance into private subnets
+2. Create Security Group allowing port 3306 from App instances and from Bastion Host.
+
+#### Tomcat (Backend)
+1. Create private facing Network Load Balancer and Target Group.
+2. Create Launch Configuration with below configuration.
+    1. Tomcat Golden AMI
+    2. User Data to deploy .war artifact from JFROG into webapps folder.
+    3. Security Group allowing Port 22 from Bastion Host and Port 8080 from private NLB.
+3. Create Auto Scaling Group
+
+#### Nginx (Frontend)
+1. Create public facing Network Load Balancer and Target Group.
+2. Create Launch Configuration with below configuration
+    1. Nginx Golden AMI
+    2. User Data to update proxy_pass rules in nginx.conf file and reload nginx service.
+    3. Security Group allowing Port 22 from Bastion Host and Port 80 from Public NLB.
+3. Create Auto Scaling Group
+
+## Application Deployment
+
+1. Artifact deployment taken care by User Data script during  Application tier EC2 instance launch process.
+2. Login to MySQL database from Application Server using MySQL CLI client and create database and table schema to store the user login data (Instructions are update in README.md file in the GitHub repo)
+
+## Post-Deployment
+
+1. Configure Cronjob to push the Tomcat Application log data to S3 bucket and also rotate the log data to remove the log data on the server after the data pushed to S3 Bucket.
+2. Configure Cloudwatch alarms to send E-Mail notification when database connections are more than 100 threshold.
+
+## Validation
+
+1. Verify you as an administrator able to login to EC2 instances from session manager & from Bastion Host.
+2. Verify if you as an end user able to access application from public internet browser.
+
+# Hit the Star! ⭐
+***If you are planning to use this repo for learning, please hit the star. Thanks!***
+
+#### Author by [DevCloud Ninjas](https://github.com/DevCloudNinjas)
+
 
-## 🏗️ Architecture Diagram
-
-```mermaid
-graph TB
-    subgraph Client Layer
-        A[Browser]
-        B[REST API]
-    end
-
-    subgraph Web Layer
-        C[login.jsp]
-        D[register.jsp]
-        E[home.jsp]
-        F[user.jsp]
-    end
-
-    subgraph Application Layer
-        G[HomeController]
-        H[Login Controller]
-        I[Register Controller]
-    end
-
-    subgraph Persistence Layer
-        J[(MySQL UserDB)]
-        K[Employee Table]
-    end
-
-    subgraph DevOps Layer
-        L[Docker]
-        M[Jenkins]
-        N[GitHub Actions]
-    end
-
-    A --> C
-    A --> D
-    A --> E
-    A --> F
-    C --> H
-    D --> I
-    E --> G
-    H --> J
-    I --> J
-    G --> J
-
-    style A fill:#e1f5fe
-    style J fill:#fff3e0
-    style L fill:#f3e5f5
-```
-
----
-
-## 📁 Project Structure
-
-```
-Java-Login-App/
-├── pom.xml                          # Maven build configuration
-├── HELP.md                          # Spring Boot generated help
-├── mvnw*                            # Maven wrapper scripts
-│
-├── src/main/java/com/dpt/demo/
-│   ├── HomeController.java          # Home page controller
-│   ├── login.java                   # Login functionality
-│   ├── register.java                # Registration functionality
-│   ├── MyWebAppApplication.java     # Spring Boot entry point
-│   └── ServletInitializer.java      # WAR deployment init
-│
-├── src/main/resources/
-│   └── application.properties       # Spring Boot configuration
-│
-└── src/main/webapp/pages/
-    ├── confirm.jsp                  # Confirmation page
-    ├── fail.jsp                     # Error page
-    ├── home.jsp                     # Home page
-    ├── login.jsp                    # Login page
-    ├── register.jsp                 # Registration page
-    └── user.jsp                     # User profile page
-```
-
----
-
-## 🗄️ Database Schema
-
-```mermaid
-erDiagram
-    Employee {
-        int unsigned id PK "Auto-increment"
-        varchar first_name "250"
-        varchar last_name "250"
-        varchar email "250"
-        varchar username "250"
-        varchar password "250"
-        timestamp regdate
-    }
-```
-
-### SQL Commands
-
-```sql
--- Create Database
-CREATE DATABASE UserDB;
-
--- Create Table
-CREATE TABLE Employee (
-  id int unsigned auto_increment not null,
-  first_name varchar(250),
-  last_name varchar(250),
-  email varchar(250),
-  username varchar(250),
-  password varchar(250),
-  regdate timestamp,
-  primary key (id)
-);
-
--- View All Records
-SELECT * FROM Employee;
-```
-
----
-
-## 🔧 DevOps Workflow
-
-```mermaid
-flowchart LR
-    subgraph Dev
-        A1[Git Clone]
-        A2[Code Development]
-        A3[Unit Tests]
-    end
-
-    subgraph Build
-        B1[Maven Clean]
-        B2[Maven Package]
-        B3[Build WAR]
-    end
-
-    subgraph Test
-        T1[Integration Tests]
-        T2[Code Coverage]
-    end
-
-    subgraph CI
-        C1[Jenkins Pipeline]
-        C2[GitHub Actions]
-        C3[Artifact Repository]
-    end
-
-    subgraph Deploy
-        D1[Docker Build]
-        D2[Docker Compose]
-        D3[Tomcat Deploy]
-    end
-
-    subgraph Monitor
-        E1[Logs]
-        E2[Health Checks]
-        E3[Performance]
-    end
-
-    A1 --> A2
-    A2 --> A3
-    A3 --> B1
-    B1 --> B2
-    B2 --> B3
-    B3 --> T1
-    T1 --> C1
-    C1 --> D1
-    D1 --> D2
-    D2 --> D3
-    D3 --> E1
-
-    style Dev fill:#e8f5e9
-    style Build fill:#fff3e0
-    style Test fill:#f3e5f5
-    style CI fill:#e3f2fd
-    style Deploy fill:#ffe0b2
-    style Monitor fill:#fce4ec
-```
-
----
-
-## 📡 API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Home page |
-| `/login` | GET/POST | Login form / Submit credentials |
-| `/register` | GET/POST | Registration form / Create account |
-| `/home` | GET | Home dashboard |
-
----
-
-## 🐳 Dockerization
-
-Create `Dockerfile`:
-
-```dockerfile
-FROM maven:3.6-openjdk-8 AS builder
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package
-
-FROM tomcat:9.0.50-jdk8
-COPY --from=builder /app/target/*.war /app/webapps/ROOT.war
-```
-
-Create `docker-compose.yml`:
-
-```yaml
-version: '3.8'
-
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/UserDB
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=password
-    depends_on:
-      - mysql
-
-  mysql:
-    image: mysql:8.0
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=UserDB
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
-
-volumes:
-  mysql-data:
-```
-
----
-
-## 🚀 CI/CD Pipeline Example
-
-### Jenkinsfile
-
-```groovy
-pipeline {
-    agent any
-
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh './mvnw clean package'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh './mvnw test'
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                sh 'docker build -t dpt-web-app .'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        }
-    }
-}
-```
-
----
-
-## 📝 Getting Started
-
-### Prerequisites
-- Java 8 (JDK 1.8)
-- Maven 3.6+
-- MySQL Server
-
-### Build Commands
-
-```bash
-# Using Maven Wrapper
-./mvnw clean package
-./mvnw spring-boot:run
-
-# Or with standard Maven
-mvn clean package
-mvn spring-boot:run
-```
-
-### Run Tests
-```bash
-./mvnw test
-./mvnw test -Dtest=MyWebAppApplicationTests
-```
-
-### Build WAR
-```bash
-./mvnw clean install
-```
-
----
-
-## 🔐 Security Notes
-
-⚠️ **Important**: The current implementation stores passwords in plain text. In production:
-- Use password hashing (BCrypt)
-- Implement CSRF protection
-- Add input validation
-- Use HTTPS
-
----
-
-## 📚 Related Projects
-
-- [DevOps Project-02](../DevOps%20Project-02/)
-- [Java-Login-App Source](./Java-Login-App/)
-
----
-
-## 📄 License
-
-© 2026 DevCloud Ninjas Tech Community
-
----
-
-## 🔄 CI/CD Pipeline
-
-### Jenkins Pipeline
-
-See [`jenkins/Jenkinsfile`](./Java-Login-App/jenkins/Jenkinsfile) for the complete pipeline including:
-- ✅ Build stage with Maven
-- ✅ Test stage with unit tests
-- ✅ Security scanning
-- ✅ Docker image building
-- ✅ Multi-stage deployment (staging → production)
-
-### GitHub Actions Alternative
-
-Create `.github/workflows/ci.yml`:
-
-```yaml
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v3
-        with:
-          java-version: '1.8'
-          distribution: 'temurin'
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
-      - name: Test
-        run: mvn test
-      - name: Build Docker image
-        run: docker build -t dptweb:${{ github.sha }} .
-      - name: Push to Registry
-        run: docker push dptweb:${{ github.sha }}
-```
-
----
-
-**Files Created in this Session:**
-- `Project-01.md` - Comprehensive project documentation with diagrams
-- `Dockerfile` - Two-stage Docker build
-- `docker-compose.yml` - Docker Compose with MySQL
-- `jenkins/Jenkinsfile` - Jenkins CI/CD pipeline
-
-**Built with ❤️ for DevOps Learning**
+![](https://imgur.com/ZdiaMeo.gif)

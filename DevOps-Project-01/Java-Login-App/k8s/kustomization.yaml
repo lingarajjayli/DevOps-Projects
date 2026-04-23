@@ -1,0 +1,15 @@
+# Kustomization configuration for Java Login App
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - configmap.yaml
+  - serviceaccount.yaml
+
+configMapGenerator:
+  - name: app-config
+    files:
+      - application.properties
+    behavior: merge

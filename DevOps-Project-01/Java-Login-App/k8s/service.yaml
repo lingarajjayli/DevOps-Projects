@@ -1,0 +1,20 @@
+# =====================================================
+# Kubernetes Service for Java Login App
+# =====================================================
+# Exposes the deployment internally (ClusterIP)
+# =====================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: dptweb-service
+  labels:
+    app: dptweb
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: dptweb

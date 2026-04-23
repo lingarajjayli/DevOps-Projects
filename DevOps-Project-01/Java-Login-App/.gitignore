@@ -48,35 +48,3 @@ Thumbs.db
 *.mov
 *.wmv
 
-# =====================================================
-# CI/CD Pipeline files
-# =====================================================
-.jenkins/
-*.jenkins*
-Jenkinsfile
-.github/workflows/  # GitHub Actions
-.gitlab-ci.yml
-.azure-pipelines.yml
-bitbucket-pipelines.yml
-
-# Container files
-docker-compose.yml
-Dockerfile
-Makefile
-
-# Kubernetes
-k8s/
-k8s-rds/
-k8s-kind/
-
-# Environment variables
-.env
-
-# kind cluster files
-kubernetes/
-cluster/
-
-# Jenkins build artifacts
-workspace/
-
-# =====================================================
