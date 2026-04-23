@@ -352,4 +352,56 @@ mvn spring-boot:run
 
 ---
 
+## 🔄 CI/CD Pipeline
+
+### Jenkins Pipeline
+
+See [`jenkins/Jenkinsfile`](./Java-Login-App/jenkins/Jenkinsfile) for the complete pipeline including:
+- ✅ Build stage with Maven
+- ✅ Test stage with unit tests
+- ✅ Security scanning
+- ✅ Docker image building
+- ✅ Multi-stage deployment (staging → production)
+
+### GitHub Actions Alternative
+
+Create `.github/workflows/ci.yml`:
+
+```yaml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '1.8'
+          distribution: 'temurin'
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+      - name: Test
+        run: mvn test
+      - name: Build Docker image
+        run: docker build -t dptweb:${{ github.sha }} .
+      - name: Push to Registry
+        run: docker push dptweb:${{ github.sha }}
+```
+
+---
+
+**Files Created in this Session:**
+- `Project-01.md` - Comprehensive project documentation with diagrams
+- `Dockerfile` - Two-stage Docker build
+- `docker-compose.yml` - Docker Compose with MySQL
+- `jenkins/Jenkinsfile` - Jenkins CI/CD pipeline
+
 **Built with ❤️ for DevOps Learning**
