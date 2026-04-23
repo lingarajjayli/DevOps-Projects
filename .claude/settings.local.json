@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip3 install *)",
+      "Bash(curl -sL https://awscli.amazonaws.com/AWSCLIV2.exe -o awscliv2.exe)",
+      "Bash(.\\\\awscliv2.exe /i /silent)",
+      "Bash(powershell *)",
+      "Bash(aws *)",
+      "Bash(curl -L -o terraform-installer.exe \"https://releases.hashicorp.com/terraform/1.9.0/terraform_1.9.0_windows_amd64.zip\")",
+      "Bash(Expand-Archive -Path terraform-installer.exe -DestinationPath terraform_temp -Force -Force)",
+      "Bash(Move-Item terraform_temp\\\\terraform.exe -Destination terraform.exe)",
+      "Bash(pwsh *)",
+      "Bash(terraform *)",
+      "Bash(export PATH=\"$PWD:$PATH\")",
+      "Bash(./terraform.exe --version)",
+      "Bash(terraform.exe --version)",
+      "Bash(chmod +x terraform)",
+      "Bash(./terraform --version)",
+      "PowerShell(Copy-Item *)",
+      "Bash(dir \"D:/DevOps-Projects/Host a Website on Amazon S3/\")",
+      "Bash(Select-Object Name)",
+      "Bash(chmod +x *)",
+      "Bash(copy *)",
+      "PowerShell(Rename-Item *)",
+      "Bash(git commit -m 'Add S3 static website hosting project *)"
+    ]
+  },
+  "prefersReducedMotion": true
+}
